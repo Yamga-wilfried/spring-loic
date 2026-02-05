@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
-public class DemoLoicGithubApplication { // J'ai ajouté "Loic" ici pour correspondre au fichier
+public class DemoLoicGithubApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(DemoLoicGithubApplication.class, args);
