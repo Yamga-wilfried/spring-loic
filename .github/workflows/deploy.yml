@@ -1,53 +1,45 @@
-name: Spring Boot CI/CD
+name: Spring Boot DevSecOps Local
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build:
-    name: Build & Test Spring Boot
-    runs-on: ubuntu-latest
+    name: Build, Scan & Deploy
+    # C'EST ICI QUE TOUT SE JOUE : On dit à GitHub de venir sur ton PC
+    runs-on: self-hosted 
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: maven
 
-      - name: Build with Maven
-        run: mvn clean verify
+      # 1. Analyse Statique SonarQube
+      - name: SonarQube Analysis
+        run: mvn verify sonar:sonar -Dsonar.projectKey=spring-loic -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
-      - name: Upload JAR artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: springboot-jar
-          path: target/*.jar
+      # 2. Envoi vers ton Nexus local
+      - name: Publish to Nexus
+        run: mvn deploy -DskipTests
+        env:
+          NEXUS_USER: ${{ secrets.NEXUS_USER }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   docker:
     name: Build Docker Image
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: build
-    if: github.ref == 'refs/heads/main'
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Download JAR artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: springboot-jar
-          path: target
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
