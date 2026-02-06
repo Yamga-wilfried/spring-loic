@@ -7,7 +7,6 @@ on:
 jobs:
   build:
     name: Build, Scan & Deploy
-    # C'EST ICI QUE TOUT SE JOUE : On dit à GitHub de venir sur ton PC
     runs-on: self-hosted 
 
     steps:
@@ -22,13 +21,15 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # 1. Analyse Statique SonarQube
+      # 1. Analyse Statique SonarQube avec chemin forcé
       - name: SonarQube Analysis
-        run: mvn verify sonar:sonar -Dsonar.projectKey=spring-loic -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        run: |
+          & "C:\Maven\maven-mvnd-1.0.3-windows-amd64\bin\mvn.cmd" verify sonar:sonar -Dsonar.projectKey=spring-loic -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
-      # 2. Envoi vers ton Nexus local
+      # 2. Envoi vers ton Nexus local avec chemin forcé
       - name: Publish to Nexus
-        run: mvn deploy -DskipTests
+        run: |
+          & "C:\Maven\maven-mvnd-1.0.3-windows-amd64\bin\mvn.cmd" deploy -DskipTests
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
