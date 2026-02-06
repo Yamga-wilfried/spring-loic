@@ -21,15 +21,15 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # 1. Analyse Statique SonarQube avec chemin forcé
+      # 1. Analyse Statique SonarQube (Utilisation de mvnd.cmd)
       - name: SonarQube Analysis
         run: |
-          & "C:\Maven\maven-mvnd-1.0.3-windows-amd64\bin\mvn.cmd" verify sonar:sonar -Dsonar.projectKey=spring-loic -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          & "C:\Maven\maven-mvnd-1.0.3-windows-amd64\bin\mvnd.cmd" verify sonar:sonar -Dsonar.projectKey=spring-loic -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
-      # 2. Envoi vers ton Nexus local avec chemin forcé
+      # 2. Envoi vers ton Nexus local (Utilisation de mvnd.cmd)
       - name: Publish to Nexus
         run: |
-          & "C:\Maven\maven-mvnd-1.0.3-windows-amd64\bin\mvn.cmd" deploy -DskipTests
+          & "C:\Maven\maven-mvnd-1.0.3-windows-amd64\bin\mvnd.cmd" deploy -DskipTests
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
