@@ -26,10 +26,10 @@ jobs:
         run: |
           & "C:\Maven\maven-mvnd-1.0.3-windows-amd64\bin\mvnd.cmd" verify sonar:sonar "-Dsonar.projectKey=spring-loic" "-Dsonar.host.url=http://localhost:9000" "-Dsonar.login=${{ secrets.SONAR_TOKEN }}"
 
-      # 2. Envoi vers Nexus local
+      # 2. Envoi vers Nexus local (Correction forcée pour éviter l'erreur POM)
       - name: Publish to Nexus
         run: |
-          & "C:\Maven\maven-mvnd-1.0.3-windows-amd64\bin\mvnd.cmd" deploy -DskipTests
+          & "C:\Maven\maven-mvnd-1.0.3-windows-amd64\bin\mvnd.cmd" deploy -DskipTests "-DaltDeploymentRepository=nexus-releases::default::http://localhost:8081/repository/maven-releases/"
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
