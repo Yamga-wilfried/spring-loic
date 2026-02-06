@@ -21,7 +21,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # 1. Analyse Statique SonarQube (Syntaxe corrigée)
+      # 1. Analyse Statique SonarQube (Syntaxe corrigée avec guillemets)
       - name: SonarQube Analysis
         run: |
           & "C:\Maven\maven-mvnd-1.0.3-windows-amd64\bin\mvnd.cmd" verify sonar:sonar "-Dsonar.projectKey=spring-loic" "-Dsonar.host.url=http://localhost:9000" "-Dsonar.login=${{ secrets.SONAR_TOKEN }}"
